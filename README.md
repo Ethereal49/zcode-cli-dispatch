@@ -34,13 +34,23 @@ No separate `zcode-edit` installation is needed. Other coding agents can run `sk
 
 ## Use
 
+In Codex, send your agent:
+
+```text
+Use $zcode-cli-dispatch to fix the parsing bug in this project and add a focused test. Review the changes and run the test afterward.
+```
+
+The Codex skill routes only code changes and test writing to ZCode. Browser, desktop, messaging, upload, and deployment work stays with the calling agent.
+
+### Direct script (optional)
+
+Other coding agents can invoke the bundled script directly:
+
 ```sh
 ZCODE_HEADLESS_CWD=/path/to/project ./skills/zcode-cli-dispatch/scripts/zcode-edit "Fix the parsing bug and add a focused test."
 ```
 
-Set `ZCODE_HEADLESS_CWD` to choose a project without changing directories. Set `ZCODE_HEADLESS_TIMEOUT` to change the default 300-second limit. The command prints only ZCode's final reply and returns a nonzero status on CLI failure. In the tested ZCode.app setup, headless sessions are stored by ZCode but do not appear as Desktop tasks.
-
-The Codex skill routes only code changes and test writing to this script. Other coding agents can invoke it directly. Browser, desktop, messaging, upload, and deployment work stays with the calling agent. Review the actual diff and run relevant tests after ZCode finishes.
+Set `ZCODE_HEADLESS_CWD` to choose a project without changing directories. Set `ZCODE_HEADLESS_TIMEOUT` to change the default 300-second limit. The command prints only ZCode's final reply and returns a nonzero status on CLI failure. In the tested ZCode.app setup, headless sessions are stored by ZCode but do not appear as Desktop tasks. Review the actual diff and run relevant tests after ZCode finishes.
 
 ## Check
 

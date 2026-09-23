@@ -34,13 +34,23 @@ mkdir -p "$HOME/.codex/skills" && cp -R skills/zcode-cli-dispatch "$HOME/.codex/
 
 ## 使用
 
+在 Codex 中，把这段话发给 Agent：
+
+```text
+使用 $zcode-cli-dispatch 技能，让 ZCode 修复当前项目的解析错误并添加针对性测试；完成后检查实际改动并运行测试。
+```
+
+Codex 技能只把代码修改和测试编写分派给 ZCode。浏览器、桌面、消息、上传和部署任务由调用方处理。
+
+### 直接运行脚本（可选）
+
+其他 coding agent 可以直接调用技能内附的脚本：
+
 ```sh
 ZCODE_HEADLESS_CWD=/path/to/project ./skills/zcode-cli-dispatch/scripts/zcode-edit "修复解析错误，并添加一个针对性的测试。"
 ```
 
-可用 `ZCODE_HEADLESS_CWD` 指定项目目录，用 `ZCODE_HEADLESS_TIMEOUT` 调整默认的 300 秒超时。命令只输出 ZCode 的最终答复；CLI 失败时返回非零状态。在已测试的 ZCode.app 环境中，headless 会话由 ZCode 保存，但不会作为桌面任务出现。
-
-Codex 技能只把代码修改和测试编写分派给这个脚本；其他 coding agent 可以直接调用。浏览器、桌面、消息、上传和部署任务由调用方处理。ZCode 返回后，应检查实际 diff 并运行相关测试。
+可用 `ZCODE_HEADLESS_CWD` 指定项目目录，用 `ZCODE_HEADLESS_TIMEOUT` 调整默认的 300 秒超时。命令只输出 ZCode 的最终答复；CLI 失败时返回非零状态。在已测试的 ZCode.app 环境中，headless 会话由 ZCode 保存，但不会作为桌面任务出现。ZCode 返回后，应检查实际 diff 并运行相关测试。
 
 ## 检查
 
