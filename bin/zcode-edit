@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Run a project-local ZCode headless task and print its final reply."""
+import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
+from contextlib import ExitStack
+from pathlib import Path
+
+APP_CLI = Path("/Applications/ZCode.app/Contents/Resources/glm/zcode.cjs")
+APP_PROVIDER = APP_CLI.parent.parent / "config/provider/zcode-builtin.json"
+
+
+def result_from(output):
+    decoder = json.JSONDecoder()
+    for start, char in enumerate(output):
+        if char != "{":
+            continue
+        try:
+            value, _ = decoder.raw_decode(output[start:])
+        except json.JSONDecodeError:
+            continue
+        if isinstance(value, dict) and "response" in value:
+            return value["response"]
+    return None
+
+
+def main():
+    cwd = Path(os.getenv("ZCODE_HEADLESS_CWD", os.getcwd())).resolve()
+    if not cwd.is_dir():
+        print("Invalid ZCode project directory", file=sys.stderr)
+        return 2
+    if len(sys.argv) < 2:
+        print("Usage: zcode-edit <coding task>", file=sys.stderr)
+        return 2
+    try:
+        timeout = int(os.getenv("ZCODE_HEADLESS_TIMEOUT", "300"))
+        if timeout <= 0:
+            raise ValueError
+    except ValueError:
+        print("ZCODE_HEADLESS_TIMEOUT must be a positive number of seconds", file=sys.stderr)
+        return 2
+
+    with ExitStack() as stack:
+        cli = shutil.which("zcode")
+        if cli:
+            launcher = [cli]
+        else:
+            node = shutil.which("node")
+            if not node or not APP_CLI.is_file() or not APP_PROVIDER.is_file():
+                print("Install ZCode CLI on PATH or ZCode.app with Node.js", file=sys.stderr)
+                return 2
+            # The app's Agent CLI expects its provider config beside the entrypoint.
+            directory = Path(stack.enter_context(tempfile.TemporaryDirectory(prefix="zcode-cli-")))
+            entrypoint = directory / "zcode.cjs"
+            entrypoint.symlink_to(APP_CLI)
+            provider_dir = directory / "provider"
+            provider_dir.mkdir()
+            (provider_dir / "zcode-builtin.json").symlink_to(APP_PROVIDER)
+            launcher = [node, str(entrypoint)]
+        try:
+            run = subprocess.run(
+                [*launcher, "--prompt", " ".join(sys.argv[1:]),
+                 "--cwd", str(cwd), "--mode", "yolo", "--json",
+                 "--disallowed-tools", "WebFetch,WebSearch"],
+                capture_output=True, text=True, timeout=timeout, check=False,
+            )
+        except subprocess.TimeoutExpired:
+            print(f"ZCode timed out after {timeout}s", file=sys.stderr)
+            return 124
+        except OSError as error:
+            print(f"Could not start ZCode: {error}", file=sys.stderr)
+            return 1
+    if run.returncode:
+        print(run.stderr or run.stdout or f"ZCode exited {run.returncode}", file=sys.stderr)
+        return run.returncode
+    response = result_from(run.stdout)
+    if response is None:
+        print(run.stderr or run.stdout or "ZCode returned no result", file=sys.stderr)
+        return 1
+    print(response)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

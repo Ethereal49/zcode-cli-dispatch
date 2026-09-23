@@ -1,0 +1,4 @@
+interface:
+  display_name: "ZCode CLI Dispatch"
+  short_description: "Delegate pure coding tasks to ZCode headless CLI"
+  default_prompt: "Use ZCode CLI to handle this coding task"
