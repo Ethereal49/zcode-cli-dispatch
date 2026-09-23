@@ -18,7 +18,13 @@
 
 ## 安装
 
-对 Codex，在本仓库目录运行一条命令即可安装完整技能：
+把这段话复制给你的 Agent 安装：
+
+```text
+请从当前已检出的仓库安装 zcode-cli-dispatch Codex 技能：将整个 skills/zcode-cli-dispatch 目录复制到 ~/.codex/skills/，保留 scripts/zcode-edit 的可执行权限，并检查安装后的 SKILL.md 和脚本。如果已经安装 ZCode.app，不要额外安装独立版 ZCode CLI。
+```
+
+手动安装（在本仓库目录执行）：
 
 ```sh
 mkdir -p "$HOME/.codex/skills" && cp -R skills/zcode-cli-dispatch "$HOME/.codex/skills/"
