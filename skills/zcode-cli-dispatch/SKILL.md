@@ -20,17 +20,10 @@ If any condition fails, handle it in the current environment instead.
 
 ## How to dispatch
 
-Use `~/.local/bin/zcode-edit`. It accepts the prompt as arguments and returns only the final assistant reply.
+Use `scripts/zcode-edit` next to this `SKILL.md`. Resolve its absolute path before running in a project directory. It accepts the prompt as arguments and returns only the final assistant reply.
 
 ```bash
-cd /path/to/project
-~/.local/bin/zcode-edit "Fix the off-by-one in src/parser.ts and add a focused test."
-```
-
-To target a project without changing directory:
-
-```bash
-ZCODE_HEADLESS_CWD=/path/to/project ~/.local/bin/zcode-edit "Refactor auth middleware into a shared helper."
+ZCODE_HEADLESS_CWD=/path/to/project ~/.codex/skills/zcode-cli-dispatch/scripts/zcode-edit "Fix the off-by-one in src/parser.ts and add a focused test."
 ```
 
 Optional environment variables:

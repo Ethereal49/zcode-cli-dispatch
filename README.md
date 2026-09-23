@@ -6,7 +6,7 @@
 
 [简体中文](README.zh-CN.md)
 
-An unofficial bridge for **Codex and other coding agents** to delegate project-local code edits to ZCode Agent. The calling agent invokes `zcode-edit`, then reviews the changed files and verifies the result. This wrapper does not replace ZCode.
+An unofficial bridge for **Codex and other coding agents** to delegate project-local code edits to ZCode Agent. The calling agent runs the bundled `scripts/zcode-edit`, then reviews the changed files and verifies the result. This wrapper does not replace ZCode.
 
 ## Requirements
 
@@ -18,32 +18,23 @@ The wrapper uses the standalone `zcode` command when available. Otherwise, it st
 
 ## Install
 
-Install the command for any coding agent:
+For Codex, install the self-contained skill with one command from this repository:
 
 ```sh
-mkdir -p "$HOME/.local/bin"
-install -m 755 bin/zcode-edit "$HOME/.local/bin/zcode-edit"
+mkdir -p "$HOME/.codex/skills" && cp -R skills/zcode-cli-dispatch "$HOME/.codex/skills/"
 ```
 
-For Codex, also install the routing skill:
-
-```sh
-mkdir -p "$HOME/.codex/skills"
-cp -R skills/zcode-cli-dispatch "$HOME/.codex/skills/"
-```
-
-If `zcode-cli-dispatch` is already installed as a Codex skill, replace its old files with the files in `skills/zcode-cli-dispatch/`.
+No separate `zcode-edit` installation is needed. Other coding agents can run `skills/zcode-cli-dispatch/scripts/zcode-edit` directly from a clone of this repository.
 
 ## Use
 
 ```sh
-cd /path/to/project
-zcode-edit "Fix the parsing bug and add a focused test."
+ZCODE_HEADLESS_CWD=/path/to/project ./skills/zcode-cli-dispatch/scripts/zcode-edit "Fix the parsing bug and add a focused test."
 ```
 
 Set `ZCODE_HEADLESS_CWD` to choose a project without changing directories. Set `ZCODE_HEADLESS_TIMEOUT` to change the default 300-second limit. The command prints only ZCode's final reply and returns a nonzero status on CLI failure. In the tested ZCode.app setup, headless sessions are stored by ZCode but do not appear as Desktop tasks.
 
-The Codex skill routes only code changes and test writing to this command. Other coding agents can invoke the same executable directly. Browser, desktop, messaging, upload, and deployment work stays with the calling agent. Review the actual diff and run relevant tests after ZCode finishes.
+The Codex skill routes only code changes and test writing to this script. Other coding agents can invoke it directly. Browser, desktop, messaging, upload, and deployment work stays with the calling agent. Review the actual diff and run relevant tests after ZCode finishes.
 
 ## Check
 

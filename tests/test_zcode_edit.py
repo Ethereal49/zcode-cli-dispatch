@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 
-WRAPPER = Path(__file__).resolve().parents[1] / "bin/zcode-edit"
+WRAPPER = Path(__file__).resolve().parents[1] / "skills/zcode-cli-dispatch/scripts/zcode-edit"
 
 
 class ZCodeEditTests(unittest.TestCase):

@@ -6,7 +6,7 @@
 
 [English](README.md)
 
-这是一个非官方的轻量桥接工具，供 **Codex 和其他 coding agent** 将项目内的代码修改任务交给 ZCode Agent。调用方运行 `zcode-edit`，随后检查实际改动并独立验收。它不替代 ZCode。
+这是一个非官方的轻量桥接工具，供 **Codex 和其他 coding agent** 将项目内的代码修改任务交给 ZCode Agent。调用方运行技能内附的 `scripts/zcode-edit`，随后检查实际改动并独立验收。它不替代 ZCode。
 
 ## 运行条件
 
@@ -18,32 +18,23 @@
 
 ## 安装
 
-任何 coding agent 都可安装命令：
+对 Codex，在本仓库目录运行一条命令即可安装完整技能：
 
 ```sh
-mkdir -p "$HOME/.local/bin"
-install -m 755 bin/zcode-edit "$HOME/.local/bin/zcode-edit"
+mkdir -p "$HOME/.codex/skills" && cp -R skills/zcode-cli-dispatch "$HOME/.codex/skills/"
 ```
 
-如果通过 Codex 使用，再安装分派技能：
-
-```sh
-mkdir -p "$HOME/.codex/skills"
-cp -R skills/zcode-cli-dispatch "$HOME/.codex/skills/"
-```
-
-若已安装旧版技能，请用 `skills/zcode-cli-dispatch/` 中的文件替换旧文件。
+无需另装 `zcode-edit` 命令。其他 coding agent 可以直接运行仓库中的 `skills/zcode-cli-dispatch/scripts/zcode-edit`。
 
 ## 使用
 
 ```sh
-cd /path/to/project
-zcode-edit "修复解析错误，并添加一个针对性的测试。"
+ZCODE_HEADLESS_CWD=/path/to/project ./skills/zcode-cli-dispatch/scripts/zcode-edit "修复解析错误，并添加一个针对性的测试。"
 ```
 
 可用 `ZCODE_HEADLESS_CWD` 指定项目目录，用 `ZCODE_HEADLESS_TIMEOUT` 调整默认的 300 秒超时。命令只输出 ZCode 的最终答复；CLI 失败时返回非零状态。在已测试的 ZCode.app 环境中，headless 会话由 ZCode 保存，但不会作为桌面任务出现。
 
-Codex 技能只把代码修改和测试编写分派给这个命令；其他 coding agent 可以直接调用可执行文件。浏览器、桌面、消息、上传和部署任务由调用方处理。ZCode 返回后，应检查实际 diff 并运行相关测试。
+Codex 技能只把代码修改和测试编写分派给这个脚本；其他 coding agent 可以直接调用。浏览器、桌面、消息、上传和部署任务由调用方处理。ZCode 返回后，应检查实际 diff 并运行相关测试。
 
 ## 检查
 
