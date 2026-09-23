@@ -21,7 +21,7 @@ The wrapper uses the standalone `zcode` command when available. Otherwise, it st
 Copy this to your coding agent to install:
 
 ```text
-Install the zcode-cli-dispatch Codex skill from this checked-out repository. Copy the entire skills/zcode-cli-dispatch directory to ~/.codex/skills/, preserve the executable permission on scripts/zcode-edit, and verify the installed SKILL.md and script. If ZCode.app is already installed, do not install a separate ZCode CLI.
+Install the zcode-cli-dispatch Codex skill from https://github.com/Ethereal49/zcode-cli-dispatch.
 ```
 
 Manual install (from this repository):
